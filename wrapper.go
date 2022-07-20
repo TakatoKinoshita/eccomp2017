@@ -23,6 +23,7 @@ type Output struct {
 
 func main() {
 	var err error
+	env := os.Getenv("EVAL_MODULE")
 
 	//read input
 	var input []byte
@@ -34,7 +35,7 @@ func main() {
 
 	//read schema
 	var schema []byte
-	if schema, err = readSchema("./schema/schema.json"); err != nil {
+	if schema, err = readSchema(fmt.Sprintf("./schema/%s.json", env)); err != nil {
 		msgs := []string{"System Error on Reading Input Schema (readSchema)", err.Error()}
 		outputError(msgs)
 		os.Exit(1)
@@ -75,7 +76,6 @@ func main() {
 	}
 
 	//execute evaluation module
-	env := os.Getenv("EVAL_MODULE")
 	if err = exec.Command("./"+env, ".").Run(); err != nil {
 		msgs := []string{"System Error on Running Evaluation Module", err.Error()}
 		outputError(msgs)
